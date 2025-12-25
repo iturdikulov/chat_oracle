@@ -1,57 +1,43 @@
 # ТЗ: Система «The Oracle of VODs»
 
-**Продукт:** Веб-сервис для семантического поиска и автоматической нарезки клипов из Twitch VODs на основе анализа чата с помощью LLM.
+Веб-сервис для семантического поиска и автоматической нарезки клипов из Twitch VODs на основе анализа чата с помощью LLM.
 
----
+## Архитектура системы
 
-## 1. Архитектура системы
-
-Система строится на базе микросервисной архитектуры, развернутой в Docker-контейнерах.
+Система базе микросервисной архитектуры, развернутой в Docker-контейнерах.
 
 * **Frontend:** Vue 3 (Vite, Pinia, Vuefity)
-* **API Layer:** Flask (Python).
+* **API Layer:** FastAPI (Python).
 * **Database:** PostgreSQL + Pony ORM.
 * **Vector Engine:** pgvector или ChromaDB.
 * **Task Queue:** Celery + RabbitMQ.
 * **State/Cache:** Redis.
 * **Processing:** FFmpeg, OpenAI API (Embeddings & GPT-4).
 
----
-
-## 2. Спецификация модулей
-
-### 2.1. Модуль Индексации (Backend - Celery)
-
-**Процесс:**
+### Модуль Индексации (Backend - Celery)
 
 1. **Ingestion:** Получение ссылки на Twitch VOD.
 2. **Chat Extraction:** Скачивание JSON-логов чата.
 3. **Preprocessing:** * Очистка текста, замена смайлов (LUL -> *смех*).
 * Разбивка на чанки (окна по 30-60 секунд) с перекрытием.
-
-
 4. **Embedding:** Превращение текста чанка в вектор через `text-embedding-3-small`.
 5. **Storage:** Сохранение в БД (Pony ORM) и вектора в векторное хранилище.
 
-### 2.2. Модуль Поиска и LLM (Backend - Flask)
-
-**Процесс:**
+### Модуль Поиска и LLM (Backend - FastAPI)
 
 1. Прием текстового запроса от Vue (например, *"момент где он упал в лаву"*).
 2. Векторизация запроса.
 3. **Semantic Search:** Поиск топ-N наиболее похожих чанков в БД.
 4. **RAG Refinement:** Отправка текста найденных чанков в GPT-4o для уточнения таймкода и выбора "самого сочного" момента.
 
-### 2.3. Модуль Видео-рендеринга (Backend - Celery + FFmpeg)
-
-**Процесс:**
+### Модуль Видео-рендеринга (Backend - Celery + FFmpeg)
 
 1. Вырезка фрагмента видео из VOD.
 2. Наложение оверлея чата (рендеринг текста поверх видео).
 3. Опциональный кроп (9:16) для мобильных форматов.
 4. Сохранение в `/media` и уведомление фронтенда через Redis.
 
-### 2.4. Frontend (Vue.js 3)
+### Frontend (Vue.js 3)
 
 **Ключевые страницы и компоненты:**
 
@@ -62,37 +48,7 @@
 
 ---
 
-## 3. Схема данных (Pony ORM)
-
-```python
-from pony.orm import *
-
-db = Database()
-
-class Stream(db.Entity):
-    twitch_id = Required(str, unique=True)
-    title = Required(str)
-    status = Required(str)  # 'processing', 'ready', 'error'
-    segments = Set('ChatSegment')
-    clips = Set('Clip')
-
-class ChatSegment(db.Entity):
-    stream = Required(Stream)
-    start_ts = Required(int)
-    end_ts = Required(int)
-    text_content = Required(LongStr)
-    vector_id = Optional(str)  # Ссылка на векторный индекс
-
-class Clip(db.Entity):
-    stream = Required(Stream)
-    video_path = Required(str)
-    description = Optional(str)
-
-```
-
----
-
-## 4. API Эндпоинты
+## API Эндпоинты
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
@@ -104,22 +60,13 @@ class Clip(db.Entity):
 
 ---
 
-## 5. Инфраструктура и Развертывание
+## Инфраструктура и Развертывание
 
 1. **Контейнеризация:** Весь стек описывается в `docker-compose.yml`.
 2. **Reverse Proxy:** Nginx управляет доступом к API и раздает статические файлы видео.
 3. **CI/CD:** GitHub Actions выполняет сборку образов и деплой на Linux-сервер.
 
----
-
-## 6. План реализации (Roadmap)
-
-1. **Phase 1 (MVP):** Flask + Pony ORM + Парсинг чата. Базовый поиск по ключевым словам.
-2. **Phase 2 (AI):** Интеграция Embeddings и векторного поиска. Реализация логики "Оракула".
-3. **Phase 3 (Video):** Celery-воркеры с FFmpeg. Генерация простых отрывков.
-4. **Phase 4 (UI):** Vue.js интерфейс, Pinia для трекинга задач, визуализация Heatmap.
-
-## Задачи на потом - Аналитика
+## Аналитика
 
 ### Чат
 
