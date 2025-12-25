@@ -1,10 +1,16 @@
 # Project To-Do and history
 
+Roadmap:
+
+1. **Phase 1 (MVP):** FastaPI + Pony ORM + Парсинг чата. Базовый поиск по ключевым словам. CLI для тестирования.
+2. **Phase 2 (AI):** Интеграция Embeddings и векторного поиска. Реализация логики "Оракула".
+3. **Phase 3 (Video):** Celery-воркеры с FFmpeg. Генерация простых отрывков.
+4. **Phase 4 (UI):** Vue.js интерфейс, Pinia для трекинга задач, визуализация Heatmap.
+
 Data ingestion: Download chat logs via API or scraping.
 Storage: PostgreSQL (structured fields: user, timestamp, message, emotes).
 Processing: Python (pandas, TensorFlow?).
 Visualization: Plotly, Grafana, or a custom FastAPI dashboard.
-
 
 ## Phase 1: Project Setup & Infrastructure
 
