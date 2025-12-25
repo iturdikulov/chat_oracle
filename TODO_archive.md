@@ -1,0 +1,2 @@
+- DONE: Better readme
+- DONE: Init vue & fastapi instances

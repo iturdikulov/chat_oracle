@@ -14,9 +14,7 @@ Visualization: Plotly, Grafana, or a custom FastAPI dashboard.
 
 ## Phase 1: Project Setup & Infrastructure
 
-- TODO: Better readme
-- TODO: Init vue & flask instance
-- TODO: Try to use devcontainers
+- TODO: Try to use devcontainers in nvim
 
 ## Phase 2: Database Layer, architecture
 
@@ -30,7 +28,7 @@ Visualization: Plotly, Grafana, or a custom FastAPI dashboard.
 
 ## Phase 7: Testing & Quality Assurance
 
-- TODO: Initialize testing workflow
+- DONE: Initialize testing workflow
 
 ## Phase 8: Documentation & Deployment
 
