@@ -5,9 +5,12 @@ Storage: PostgreSQL (structured fields: user, timestamp, message, emotes).
 Processing: Python (pandas, TensorFlow?).
 Visualization: Plotly, Grafana, or a custom FastAPI dashboard.
 
-- TODO: Try to use devcontainers
 
 ## Phase 1: Project Setup & Infrastructure
+
+- TODO: Better readme
+- TODO: Init vue & flask instance
+- TODO: Try to use devcontainers
 
 ## Phase 2: Database Layer, architecture
 
@@ -15,11 +18,13 @@ Visualization: Plotly, Grafana, or a custom FastAPI dashboard.
 
 ## Phase 4: Video Worker 
 
-## Phase 5: Flask Server
+## Phase 5: FastAPI Server
 
 ## Phase 6: Vue Frontend
 
 ## Phase 7: Testing & Quality Assurance
+
+- TODO: Initialize testing workflow
 
 ## Phase 8: Documentation & Deployment
 
